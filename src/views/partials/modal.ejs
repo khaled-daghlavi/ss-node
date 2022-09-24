@@ -1,0 +1,12 @@
+<div id="<%- id %>" class="w3-modal <%- isRTL ? 'w3-rtl' : '' %>">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="<%- style %>">
+        <div class="w3-center"><br>
+            <button onclick="<%- closeCall %>" class="w3-close-modal" title="بستن"><span>&times;</span></button>
+        </div>
+        <div class="w3-container" style="min-width: 100%">
+            <div id="<%- id %>-content" class="w3-form">
+                <%- content %>
+            </div>
+        </div>
+    </div>
+</div>

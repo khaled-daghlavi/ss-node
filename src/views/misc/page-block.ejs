@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% if (status === 403) { %>
+        <title>دسترسی ممنوع</title>
+    <% } else if (status === 404) { %>
+        <title>صفحه ناموجود</title>
+    <% } %>
+    <%- include('../partials/common-toolbox') %>
+    <link rel="stylesheet" href="/font/fontawesome/css/all.css">
+</head>
+<body dir="rtl">
+<div id="main-container" class="w3-card">
+    <% if (status === 403) { %>
+        <img src="/images/403-icon.jpg">
+        <p>دسترسی به این صفحه امکان پذیر نمی&zwnj;باشد</p>
+    <% } else if (status === 404) { %>
+        <img src="/images/404-icon.png">
+        <p>صفحه یا آیتم مورد نظر یافت نشد</p>
+    <% } %>
+</div>
+</body>
+</html>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #main-container {
+        width: 80%;
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 30px;
+        border-radius: 10px;
+        background: white;
+    }
+
+    img {
+        display: block;
+        height: 200px;
+        margin: 0 auto;
+    }
+
+    p {
+        text-align: center;
+        margin: 0;
+        padding-top: 16px;
+        font-weight: bold;
+        font-size: 24px;
+    }
+
+    @media only screen and (max-width: 600px) {
+        #main-container {
+            width: 93%;
+        }
+    }
+</style>
+<script>
+    $(function () {
+
+    })
+</script>

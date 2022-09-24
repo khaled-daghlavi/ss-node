@@ -1,0 +1,90 @@
+{
+  "submit": "ثبت",
+  "username": "نام کاربری",
+  "password": "رمز عبور",
+  "role": "نقش",
+  "firstname": "نام",
+  "surname": "نام خانوادگی",
+  "full_name": "نام کامل",
+  "address": "آدرس",
+  "social_id": "کد ملی",
+  "operation": "عملیات",
+  "created_at": "تاریخ ثبت",
+  "created_by": "ثبت توسط",
+  "status": "وضعیت",
+  "services": {
+    "users_management": "مدیریت کاربران"
+  },
+  "roles": {
+    "ADMIN": "ادمین",
+    "OPERATOR": "مسئول فروش",
+    "CUSTOMER": "مشتری",
+    "SALES_DIRECTOR": "مدیر فروش",
+    "FINANCE": "مسئول مالی",
+    "MANAGER": "مدیر کارخانه"
+  },
+  "user_status": {
+    "TEMP_PASS": "پسوورد موقت",
+    "USER_ASSIGNED_PASS": "پسوورد فعال",
+    "DEACTIVE": "غیرفعال",
+    "RESET_PASSWORD": "ریست پسوورد",
+    "FORGOT_PASSWORD": "فراموشی پسوور"
+  },
+  "user_login": {
+    "users_login": "ورود کاربران",
+    "username": "نام کاربری",
+    "password": "رمز عبور",
+    "register": "ثبت نام",
+    "re-password": "تکرار رمز عبور",
+    "forgot_password": "فراموشی رمز عبور",
+    "login": "ورود",
+    "already_have_an_account": "اکانت کاربری دارم",
+    "back_to_login": "بازگشت به صفحه ورود",
+    "user_deactivated_msg": "این اکانت کاربری غیرفعال شده است",
+    "duplicate_username": "نام کاربری تکراری",
+    "password_same_as_old_one": "رمزعبور جدید با قدیم یکسان است",
+    "login_failed": "ورود ناموفق",
+    "enter_email": "لطفا ایمیل خود را جهت ارسال لینک بازیابی وارد کنید",
+    "email_not_valid": "ایمیل معتبر نیست",
+    "recover_password": "درخواست بازیابی",
+    "email_invalid": "آدرس ایمیل صحیح نیست",
+    "password_repeat_not_correct": "تکرار رمز عبور صحیح نیست",
+    "registered_successfully": "ثبت نام موفق"
+  },
+  "navbar": {
+    "change_password": "تغییر رمز عبور",
+    "logout": "خروج"
+  },
+  "user_main": {
+    "main_page": "صفحه اصلی",
+    "services": "سرویس&zwnj;ها",
+    "change_password_body": "لطفا برای حساب کاربری خود رمز عبور جدید تعیین کنید:",
+    "new_password": "رمز عبور جدید",
+    "password_repeat": "تکرار رمز عبور",
+    "password_change_success": "تغییر رمز عبور موفق",
+    "password_repeat_not_correct": "دو رمز عبور یکسان نیستند"
+  },
+  "users_manage": {
+    "users_manage_title": "مدیریت کاربران",
+    "new_user": "کاربر جدید",
+    "user_role": "نقش کاربر",
+    "choose_user_role": "نقش کاربر را تعیین کنید",
+    "must_choose_a_role": "باید یک نقش برای کاربر تعیین کنید",
+    "initial_password": "رمز عبور اولیه",
+    "deactivate_user": "غیرفعال کردن کاربر",
+    "activate_user": "فعال کردن کاربر",
+    "reset_password": "ریست پسوورد",
+    "edit_user": "ویرایش کاربر",
+    "confirm_new_user_msg": "آیا از ثبت کاربر جدید مطمئن هستید؟",
+    "confirm_edit_user_msg": "آیا از ویرایش اطلاعات کاربر مطمئن هستید؟",
+    "confirm_activate_user_msg": "آیا از فعال کردن این کاربر مطمئن هستید؟",
+    "confirm_deactivate_user_msg": "آیا از غیرفعال کردن این کاربر مطمئن هستید؟",
+    "confirm_user_reset_password_msg": "آیا از ریست کردن پسوورد این کاربر مطمئن هستید؟"
+  },
+  "common": {
+    "request_body_validation_failed": "درخواست اشتباه",
+    "complete_form_first": "لطفا فرم را تکمیل کنید",
+    "operation_successful": "عملیات موفق",
+    "operation_failed": "عملیات ناموفق"
+  }
+}

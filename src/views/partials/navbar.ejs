@@ -1,0 +1,26 @@
+<div id="navbar" class="nav-bar no-print <%- isRTL ? 'w3-rtl' : '' %>" <%- locals.containerAttr ?? '' %>>
+    <div class="right">
+        <%- rightContent %>
+    </div>
+    <div class="left">
+        <% if(locals.leftContent === undefined) {%>
+            <a class="nav-btn back-to-main" href="<%- _Routes.USERS_MAIN.path %>" title="<%- req.t('user_main.main_page') %>"><i class="fa-solid fa-home"></i></a>
+        <% } else { %>
+            <%- leftContent %>
+        <% }%>
+        <div id="user-tag" class="w3-dropdown-hover">
+            <i class="fa-solid fa-user"></i>
+            <span id="user" style="font-size: 15px; font-weight: bold"><%- `${req.user.firstname} ${req.user.surname || ''}` %></span>
+            <% if(req.originalUrl.match(new RegExp(`^${_Routes.USERS_MAIN.path}`))) { %>
+                <div class="w3-dropdown-content">
+                    <div onclick="startChangePasswordModal()"><%- req.t('navbar.change_password') %></div>
+                    <div onclick="logout()"><%- req.t('navbar.logout') %></div>
+                </div>
+            <% } else {%>
+                <div class="w3-dropdown-content">
+                    <div onclick="logout()"><%- req.t('navbar.logout') %></div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%- req.t('user_login.users_login') %></title>
+    <%- include('../partials/common-toolbox') %>
+    <link rel="stylesheet" href="/style/user-login.css">
+    <link rel="stylesheet" href="/font/fontawesome/css/all.css">
+</head>
+<body>
+<div id="main-wrapper">
+    <div id="main-container" class="w3-card <%- isRTL ? 'w3-rtl' : '' %>">
+        <div id="login-section" class="w3-section w3-form">
+            <div class="title"><%- req.t('user_login.users_login') %></div>
+            <div>
+                <label><%- req.t('user_login.username') %></label>
+                <input type="text" name="username">
+                <span class="error-msg"></span>
+            </div>
+            <div>
+                <label><%- req.t('user_login.password') %></label>
+                <input type="password" name="password">
+                <span class="error-msg"></span>
+            </div>
+            <div class="section-link">
+                <div onclick="switchSections(1)"><%- req.t('user_login.register') %></div>
+            </div>
+            <div class="section-link">
+                <div onclick="switchSections(2)"><%- req.t('user_login.forgot_password') %></div>
+            </div>
+            <div class="w3-form-row justify-end">
+                <button class="submit-btn" onclick="userLogin(this)"><%- req.t('user_login.login') %></button>
+            </div>
+        </div>
+
+        <div id="signup-section" class="w3-section w3-form" style="display: none">
+            <div class="title"><%- req.t('user_login.register') %></div>
+            <div>
+                <label><%- req.t('user_login.username') %></label>
+                <input type="text" name="username">
+                <span class="error-msg"></span>
+            </div>
+            <div>
+                <label><%- req.t('user_login.password') %></label>
+                <input type="password" name="password">
+                <span class="error-msg"></span>
+            </div>
+            <div>
+                <label><%- req.t('user_login.re-password') %></label>
+                <input type="password" name="re-password">
+                <span class="error-msg"></span>
+            </div>
+            <div>
+                <label><%- req.t('firstname') %></label>
+                <input type="text" name="firstname">
+                <span class="error-msg"></span>
+            </div>
+            <div>
+                <label><%- req.t('surname') %></label>
+                <input type="text" name="surname">
+                <span class="error-msg"></span>
+            </div>
+            <div class="section-link">
+                <div onclick="switchSections(0)"><%- req.t('user_login.already_have_an_account') %></div>
+            </div>
+            <div class="w3-form-row justify-end">
+                <button class="submit-btn" onclick="registerNewUser(this)"><%- req.t('user_login.register') %></button>
+            </div>
+        </div>
+
+        <div id="forgot-password-section" class="w3-section w3-form" style="display: none">
+            <div class="title"><%- req.t('user_login.forgot_password') %></div>
+            <div>
+                <label><%- req.t('user_login.enter_email') %></label>
+                <input type="email" name="email" placeholder="example@domain.com">
+                <span class="error-msg"><%- req.t('user_login.email_not_valid') %></span>
+            </div>
+            <div class="section-link">
+                <div onclick="switchSections(0)"><%- req.t('user_login.back_to_login') %></div>
+            </div>
+            <div class="w3-form-row justify-end">
+                <button class="submit-btn" onclick="submitForgotPassword(this)"><%- req.t('user_login.recover_password') %></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<%- include('../partials/footer') %>
+</body>
+</html>
+<script>
+    const userLoginConstraint = [
+        {name: 'username', constraints: [{minLen: 5}], valPreApply: v => toEnDigit(v, 'plain')},
+        {name: 'password', constraints: [{minLen: 6}]},
+    ]
+    const signupConstraint = [
+        {name: 'username', constraints: [{minLen: 5}], valPreApply: v => toEnDigit(v, 'plain')},
+        {name: 'password', constraints: [{minLen: 6}]},
+        {
+            name: 're-password',
+            constraints: [{}],
+            intraConstraints: [{
+                validate: (thisVal, otherVals) => otherVals.password && thisVal === otherVals.password,
+                errMsg: '<%- req.t('user_login.password_repeat_not_correct') %>',
+            }]
+        },
+        {name: 'firstname', constraints: [{minLen: 3}, {maxLen: 30}]},
+        {name: 'surname', constraints: [{minLen: 3}, {maxLen: 30}]},
+    ]
+    const userForgotPasswordConstraint = [
+        {name: 'email', constraints: [{func: validateEmail, errMsg: '<%- req.t('user_login.email_invalid') %>'}]},
+    ]
+
+    $(function () {
+        $('#login-section input').on('keyup', (e) => {
+            if (e.Key === 'Enter' || e.keyCode === 13) {
+                $('#login-section .submit-btn').click()
+            }
+        })
+        $('#forgot-password-section input').on('keyup', (e) => {
+            if (e.Key === 'Enter' || e.keyCode === 13) {
+                $('#forgot-password-section .submit-btn').click()
+            }
+        })
+        for (let constraints of [userLoginConstraint, signupConstraint, userForgotPasswordConstraint]) {
+            for (let constraint of constraints) {
+                $(`input[name=${constraint.name}]`).on('input', () => {
+                    $(`input[name=${constraint.name}]`).parent().removeClass('error')
+                })
+            }
+        }
+    })
+
+    async function registerNewUser(el) {
+        let err = false,
+            validateData,
+            post = {}
+        for (let entry of signupConstraint) {
+            entry.selector = $(`#signup-section input[name=${entry.name}]`)
+            validateData = await validateInput(undefined, entry, post)
+            if (validateData.errStatus) {
+                err = true
+                entry.selector.parent().addClass('error')
+                entry.selector.parent().find('.error-msg').text(validateData.errMessage)
+            } else {
+                post[hyphenToCamelCase(entry.name)] = validateData.value
+            }
+        }
+        if (err) {
+            notif('<%- req.t('common.complete_form_first') %>', 'fail', 2500)
+            return
+        }
+        postJSON('<%- _Routes.USERS_REGISTRATION.path %>',
+            post,
+            {
+                onSuccess: () => {
+                    notif('<%- req.t('user_login.registered_successfully') %>', 'success')
+                    switchSections(0)
+                },
+                spinnerBtn: el,
+                spinnerStopOnSuccess: true,
+            })
+    }
+
+    async function userLogin(el) {
+        let err = false,
+            validateData,
+            post = {}
+        for (let entry of userLoginConstraint) {
+            entry.selector = $(`#login-section input[name=${entry.name}]`)
+            validateData = await validateInput(undefined, entry)
+            if (validateData.errStatus) {
+                err = true
+                entry.selector.parent().addClass('error')
+                entry.selector.parent().find(`.error-msg`).text(validateData.errMessage)
+            } else {
+                post[hyphenToCamelCase(entry.name)] = validateData.value
+            }
+        }
+        if (err) {
+            return
+        }
+        postJSON('<%- _Routes.USERS_LOGIN.path %>',
+            post,
+            {
+                onSuccess: () => {
+                    redirectTo('<%- _Routes.USERS_MAIN.path %>')
+                },
+                spinnerBtn: el,
+                spinnerStopOnSuccess: false,
+            })
+    }
+
+    function switchSections(section) {
+        if (section === 0) {
+            $('#login-section').show()
+            $('#forgot-password-section, #signup-section').hide()
+        } else if (section === 1) {
+            $('#signup-section').show()
+            $('#forgot-password-section, #login-section').hide()
+        } else {
+            $('#forgot-password-section').show()
+            $('#login-section, #signup-section').hide()
+        }
+        $('input').val('')
+        $('.error').removeClass('error')
+    }
+
+    async function submitForgotPassword(el) {
+        let err = false,
+            validateData,
+            post = {}
+        for (let entry of userForgotPasswordConstraint) {
+            entry.selector = $(`#forgot-password-section input[name=${entry.name}]`)
+            validateData = await validateInput(undefined, entry)
+            if (validateData.errStatus) {
+                err = true
+                entry.selector.parent().addClass('error')
+                entry.selector.parent().find(`.error-msg`).text(validateData.errMessage)
+            } else {
+                post[hyphenToCamelCase(entry.name)] = validateData.value
+            }
+        }
+        if (err) {
+            return
+        }
+        //TODO: complete this
+    }
+</script>

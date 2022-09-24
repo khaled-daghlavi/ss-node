@@ -1,0 +1,10 @@
+/node_modules
+/.idea
+/logs
+/private/
+/logs_test/
+/public/font/fontawesome
+/public/js/bootstrap
+/uploads
+/uploads_test
+*.LICENSE.txt

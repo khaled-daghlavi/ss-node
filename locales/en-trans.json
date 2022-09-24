@@ -1,0 +1,90 @@
+{
+  "submit": "Submit",
+  "username": "Username",
+  "password": "Password",
+  "role": "Role",
+  "firstname": "Firstname",
+  "surname": "Surname",
+  "full_name": "Full Name",
+  "address": "Address",
+  "social_id": "Social ID",
+  "operation": "Operation",
+  "created_at": "Created At",
+  "created_by": "Created By",
+  "status": "Status",
+  "services": {
+    "users_management": "Manage Users"
+  },
+  "roles": {
+    "ADMIN": "Admin",
+    "OPERATOR": "Operator",
+    "CUSTOMER": "Customer",
+    "SALES_DIRECTOR": "Sales Director",
+    "FINANCE": "Finance",
+    "MANAGER": "Manager"
+  },
+  "user_login": {
+    "users_login": "Users Login",
+    "username": "Username",
+    "password": "Password",
+    "register": "Register",
+    "re-password": "Repeat Password",
+    "forgot_password": "Forgot Password",
+    "login": "Login",
+    "already_have_an_account": "Already Registered",
+    "back_to_login": "Back to login",
+    "user_deactivated_msg": "this user is deactivated",
+    "duplicate_username": "duplicate username",
+    "password_same_as_old_one": "new password is the same as old",
+    "login_failed": "incorrect credentials",
+    "enter_email": "Enter e-mail to send recovery link",
+    "email_not_valid": "not a valid e-email",
+    "recover_password": "Send E-Mail",
+    "email_invalid": "e-mail invalid",
+    "password_repeat_not_correct": "password repeat is incorrect",
+    "registered_successfully": "Registered successfully"
+  },
+  "navbar": {
+    "change_password": "Change Password",
+    "logout": "Logout"
+  },
+  "user_status": {
+    "TEMP_PASS": "Temp Password",
+    "USER_ASSIGNED_PASS": "Active",
+    "DEACTIVE": "Deactive",
+    "RESET_PASSWORD": "Manual Reset Password",
+    "FORGOT_PASSWORD": "Forgot Password"
+  },
+  "user_main": {
+    "main_page": "Main Page",
+    "services": "Services",
+    "change_password_body": "Assign a new password for your account:",
+    "new_password": "New password",
+    "password_repeat": "Repeat new password",
+    "password_change_success": "Password change successful",
+    "password_repeat_not_correct": "password repeat incorrect"
+  },
+  "users_manage": {
+    "users_manage_title": "Manage Users",
+    "new_user": "New User",
+    "user_role": "User Role",
+    "choose_user_role": "Choose User Role",
+    "must_choose_a_role": "must choose a role first",
+    "initial_password": "Initial Password (must change on login)",
+    "deactivate_user": "Deactivate User",
+    "activate_user": "Activate User",
+    "reset_password": "Reset Password",
+    "edit_user": "Edit User",
+    "confirm_new_user_msg": "Confirm new User creation?",
+    "confirm_edit_user_msg": "Confirm User edit?",
+    "confirm_activate_user_msg": "Confirm User activation?",
+    "confirm_deactivate_user_msg": "Confirm User deactivate?",
+    "confirm_user_reset_password_msg": "Confirm User reset password?"
+  },
+  "common": {
+    "request_body_validation_failed": "bad request",
+    "complete_form_first": "please complete the form",
+    "operation_successful": "Success",
+    "operation_failed": "Failed"
+  }
+}

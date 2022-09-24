@@ -1,0 +1,251 @@
+.title, label {
+  user-select: none;
+}
+
+.w3-form {
+  width: fit-content;
+  min-width: initial;
+  margin-right: auto;
+  margin-left: auto;
+}
+.w3-form #negotiator, .w3-form #tracker {
+  width: 350px;
+}
+.w3-form #attachment .first-row .remove-btn {
+  visibility: hidden;
+}
+.w3-form #attachment input {
+  display: inline-block;
+}
+.w3-form #attachment #add-attachment-input {
+  margin-top: 16px;
+}
+.w3-form #attachment .remove-btn {
+  margin-right: 8px;
+}
+.w3-form #saved-attachments {
+  align-items: center;
+  height: 50px;
+}
+.w3-form #saved-attachments p {
+  margin: 0;
+}
+.w3-form #saved-attachments .attach {
+  border: 3px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+}
+.w3-form #saved-attachments .attach i {
+  padding: 15px;
+}
+.w3-form #saved-attachments .attach:hover {
+  background-color: #dddddd;
+}
+.w3-form #saved-attachments .attach .remove-attach {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  top: -7px;
+  left: -7px;
+  border-radius: 50%;
+  color: white;
+  background-color: red;
+  font-size: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.w3-form #saved-attachments .attach .remove-attach span {
+  display: block;
+  line-height: 0;
+  margin-top: 2px;
+}
+.w3-form #saved-attachments .attach .restore-attach {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  top: -7px;
+  left: -7px;
+  border-radius: 50%;
+  color: white;
+  background-color: black;
+  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.w3-form #saved-attachments .attach .restore-attach i {
+  margin: 0.5px 0 0 0.5px;
+}
+.w3-form #saved-attachments .attach.remove {
+  border: 3px solid red;
+}
+.w3-form #discount #radio-discount {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
+.w3-form #discount #radio-discount input {
+  margin-left: 7px;
+  width: 15px;
+}
+.w3-form #discount #radio-discount label {
+  font-weight: normal;
+}
+.w3-form #discount #radio-discount label:last-child {
+  margin: 0;
+}
+
+.goods-row {
+  align-items: center;
+  padding: 0 8px;
+}
+.goods-row label {
+  font-size: 1.1em;
+  margin: 0;
+}
+.goods-row .product {
+  width: 195px;
+}
+.goods-row .finishing {
+  width: 120px;
+}
+.goods-row .square {
+  width: 89px;
+}
+.goods-row .grade {
+  width: 59px;
+}
+.goods-row .long, .goods-row .width {
+  width: 85px;
+}
+.goods-row .thickness {
+  width: 70px;
+}
+.goods-row .area {
+  width: 100px;
+}
+.goods-row .date {
+  width: 90px;
+}
+.goods-row .unit {
+  width: 90px;
+}
+.goods-row .count {
+  width: 100px;
+}
+.goods-row .price {
+  width: 117px;
+}
+.goods-row .total {
+  width: 147px;
+}
+.goods-row .comment {
+  width: 754px;
+}
+.goods-row.error {
+  background-color: #ffdddd !important;
+}
+
+.goods-row.first-row .remove-btn, .goods-row.labels .remove-btn, .last-row .remove-btn {
+  visibility: hidden;
+}
+
+.goods-row .remove-btn button, .last-row .remove-btn button {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+.last-row {
+  position: relative;
+  display: flex;
+  padding: 0 8px;
+  flex-flow: row nowrap;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+}
+.last-row > input[type=text] {
+  width: 147px;
+}
+.last-row > input[type=checkbox] {
+  margin-left: 10px;
+}
+.last-row > label {
+  text-align: center;
+}
+.last-row #add-row {
+  position: absolute;
+  right: 35px;
+  margin-top: 10px;
+}
+
+.comment-bar {
+  margin-top: 20px;
+  margin-right: 8px;
+  margin-left: 8px;
+  border: 1px solid black;
+  font-size: 1em;
+  background-color: #f1f1f1;
+  padding: 8px;
+  border-radius: 8px;
+  width: 1400px;
+}
+
+#comment textarea, #production_comment textarea {
+  width: 1400px;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+}
+
+.add-button, .w3-form #attachment #add-attachment-input, .last-row #add-row {
+  border-radius: 50%;
+  border: none;
+  background-color: #009688 !important;
+  color: white !important;
+  font-size: 24px;
+  width: 45px;
+  height: 45px;
+  padding: 3px 0 0 0;
+}
+.add-button:hover, .w3-form #attachment #add-attachment-input:hover, .last-row #add-row:hover {
+  background-color: rgba(0, 150, 136, 0.7) !important;
+  color: white !important;
+}
+
+.remove-btn-template, .w3-form #attachment .remove-btn, .goods-row .remove-btn button, .last-row .remove-btn button {
+  line-height: 0;
+  font-size: 20px;
+  padding: 0;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: none;
+  text-align: center;
+  background-color: #f44336 !important;
+  color: white !important;
+}
+.remove-btn-template:hover, .w3-form #attachment .remove-btn:hover, .goods-row .remove-btn button:hover, .last-row .remove-btn button:hover {
+  background-color: rgba(244, 67, 54, 0.9) !important;
+  color: white !important;
+}
+
+.typeahead__container .customer-type-tag_1, .typeahead__container .customer-type-tag_2 {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+.typeahead__container .customer-type-tag_1 {
+  background-color: lavender;
+}
+.typeahead__container .customer-type-tag_2 {
+  background-color: powderblue;
+}
+
+/*# sourceMappingURL=form-new-order.css.map */

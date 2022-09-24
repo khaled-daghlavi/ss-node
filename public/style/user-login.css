@@ -1,0 +1,51 @@
+#main-wrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow: auto;
+  min-height: calc(100% - 45px);
+}
+
+#main-container {
+  width: 500px;
+  height: fit-content;
+  margin-top: 100px;
+  border-radius: 10px;
+  background: white;
+}
+#main-container .title {
+  font-size: 26px;
+  font-weight: bold;
+  padding-bottom: 32px;
+}
+#main-container label {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+#main-container input {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  direction: ltr;
+}
+#main-container select {
+  padding-right: 12px;
+}
+#main-container .submit-btn {
+  margin-top: 16px;
+}
+#main-container .section-link > div {
+  cursor: pointer;
+  width: fit-content;
+}
+#main-container .section-link > div:hover {
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 600px) {
+  #main-container {
+    width: 93%;
+  }
+}
+
+/*# sourceMappingURL=user-login.css.map */

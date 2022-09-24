@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%- req.t('user_main.main_page') %></title>
+    <%- include('../partials/common-toolbox') %>
+    <link rel="stylesheet" href="/style/user-main.css">
+    <link rel="stylesheet" href="/font/fontawesome/css/all.css">
+</head>
+<body>
+<%- include('../partials/navbar', {rightContent: ``, leftContent: '' }) %>
+<div id="main-wrapper">
+    <div id="main" class="w3-container <%- isRTL ? 'w3-rtl' : '' %>">
+        <div class="title"><%- req.t('user_main.services') %></div>
+        <% for (let service of _Roles[req.user.role].services) { if(service.label){ %>
+            <a class="nav-btn" href="<%- service.path %>"><%- (service.labelPerRole?.[req.user.role]) || req.t(`services.${service.label}`) %></a>
+        <% }} %>
+    </div>
+</div>
+<%- include('../partials/modal', {id: 'modal', style: 'width: min(80%, 600px)', closeCall: 'closeChangePasswordModal()', content: ``}) %>
+<div id="change-password-modal-content" class="w3-hide">
+    <div class="w3-section-row">
+        <p><%- req.t('user_main.change_password_body') %></p>
+        <div id="password">
+            <label><b><%- req.t('user_main.new_password') %></b></label>
+            <input type="password"
+                   placeholder="<%- req.t('user_main.new_password') %>">
+            <span class="error-msg">1</span>
+        </div>
+    </div>
+    <div class="w3-section-row">
+        <div id="re-password">
+            <label><b><%- req.t('user_main.password_repeat') %></b></label>
+            <input type="password"
+                   placeholder="<%- req.t('user_main.password_repeat') %>">
+            <span class="error-msg"><%- req.t('user_main.password_repeat_not_correct') %></span>
+        </div>
+        <div class="btn-row">
+            <button class="submit-btn" onclick="submitNewPassword()"><%- req.t('submit') %></button>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>
+</body>
+</html>
+<script>
+    $(function () {
+        $('#modal-content').html($('#change-password-modal-content').html())
+        $('#change-password-modal-content').remove()
+        $(`#main button`).on('click', clickEvent => {
+            window.location.assign(window.location.origin + $(clickEvent.target).attr('url'))
+        })
+        <% if(userStatus.tempPass){ %>
+        startChangePasswordModal()
+        <% } %>
+    })
+
+    $('#password input, #re-password input')
+        .on('input', (e) => $(e.target).parents('#password, #re-password').removeClass('error'))
+        .on('keyup', (e) => {
+            if (e.keyCode === 13) {
+                submitNewPassword()
+            }
+        })
+
+    function startChangePasswordModal() {
+        $('#modal').css('display', 'block')
+    }
+
+    function closeChangePasswordModal() {
+        $('#modal input').val('')
+        $('#modal').css('display', 'none')
+    }
+
+    function submitNewPassword() {
+        let pass = $('#password input').val(),
+            rePass = $('#re-password input').val()
+        if (pass.length < 8) {
+            $('#password .error-msg').text('رمز عبور باید حداقل ۸ حرف باشد')
+            $('#password').addClass('error')
+        } else if (pass.length > 35) {
+            $('#password .error-msg').text('رمز عبور باید حداکثر ۳۵ حرف باشد')
+            $('#password').addClass('error')
+        } else if (pass !== rePass) {
+            $('#re-password').addClass('error')
+        } else {
+            postJSON('<%- _Routes.USERS_CHANGE_PASS.path %>',
+                {pass},
+                {
+                    onSuccess: () => {
+                        notif('<%- req.t('user_main.password_change_success') %>', 'success')
+                    },
+                    onFail: (data) => {
+                        if (data.msg === 'sameAsOldPassword') { //TODO: refactor backend
+                            notif('رمز جدید باید متفاوت از رمز قدیم باشد', 'fail')
+                        } else {
+                            notif('تغییر رمز عبور ناموفق', 'fail')
+                        }
+                    },
+                })
+                .finally(e => {
+                    closeChangePasswordModal()
+                })
+        }
+    }
+</script>

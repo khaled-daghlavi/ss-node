@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%- req.t('users_manage.users_manage_title') %></title>
+    <%- include('../partials/common-toolbox') %>
+    <script src="/js/jquery.dataTables.min.js"></script>
+    <script src="/js/persian-date.min.js"></script>
+    <link rel="stylesheet" href="/style/jquery.dataTables.css">
+    <link rel="stylesheet" href="/font/fontawesome/css/all.css">
+</head>
+<body>
+<%- include('../partials/navbar', {rightContent: `<button onclick="initNewUser()">${req.t('users_manage.new_user')}</button>`}) %>
+<div id="main-wrapper">
+    <table id="dataTable" class="cell-border" style="width:100%">
+        <thead>
+        <tr>
+            <th><%- req.t('username') %></th>
+            <th><%- req.t('role') %></th>
+            <th><%- req.t('full_name') %></th>
+            <th><%- req.t('operation') %></th>
+            <th><%- req.t('created_at') %></th>
+            <th><%- req.t('created_by') %></th>
+            <th><%- req.t('status') %></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<%- include('../partials/footer') %>
+<%- include('../partials/modal', {id: 'modal', style: 'width: min(80%, 1000px)', closeCall: 'closeModal()', content: ``}) %>
+
+<div id="user-modal-content" class="w3-section w3-hide">
+    <div class="w3-section-row">
+        <div id="role">
+            <label><b><%- req.t('users_manage.user_role') %></b></label>
+            <select>
+                <option value="" disabled selected><%- req.t('users_manage.choose_user_role') %></option>
+                <% for (let role in _Roles) { %>
+                    <option value="<%- _Roles[role].name %>"><%- req.t(`roles.${_Roles[role].name}`) %></option>
+                <% } %>
+            </select>
+            <span class="error-msg"><%- req.t('users_manage.must_choose_a_role') %></span>
+        </div>
+        <div class="dummy-col">
+        </div>
+    </div>
+    <div class="w3-section-row">
+        <div id="firstname" style="display: none;">
+            <label><b><%- req.t('firstname') %></b></label>
+            <input type="text" placeholder="<%- req.t('firstname') %>">
+            <span class="error-msg"></span>
+        </div>
+        <div id="surname" style="display: none;">
+            <label><b><%- req.t('surname') %></b></label>
+            <input type="text" placeholder="<%- req.t('surname') %>">
+            <span class="error-msg"></span>
+        </div>
+    </div>
+    <div class="w3-section-row">
+        <div id="username" style="display: none;">
+            <label><b><%- req.t('username') %></b></label>
+            <input type="text" placeholder="<%- req.t('username') %>">
+            <span class="error-msg"></span>
+        </div>
+        <div id="password" style="display: none;">
+            <label><b><%- req.t('password') %></b></label>
+            <input type="text"
+                   placeholder="<%- req.t('users_manage.initial_password') %>">
+            <span class="error-msg"></span>
+        </div>
+    </div>
+    <div class="w3-section-row">
+        <div id="sid" style="display: none;">
+            <label><b><%- req.t('social_id') %></b></label>
+            <input type="text" placeholder="12345...">
+            <span class="error-msg"></span>
+        </div>
+        <div id="address" style="display: none;">
+            <label><b><%- req.t('address') %></b></label>
+            <input type="text" class="input-fa"
+                   placeholder="<%- req.t('address') %>">
+            <span class="error-msg"></span>
+        </div>
+    </div>
+    <div class="btn-row">
+        <button class="submit-btn new-user" style="margin: 0" onclick="submitNewUser(this)"><%- req.t('submit') %></button>
+        <button class="submit-btn edit-user" onclick="submitEditUser(this)"><%- req.t('submit') %></button>
+    </div>
+</div>
+
+</body>
+</html>
+<style>
+    .w3-section-row {
+        display: flex;
+        flex-flow: row nowrap;
+    }
+
+    .w3-section-row > div {
+        flex: 1;
+    }
+
+    .w3-section-row > div:first-child {
+        margin-right: 10px;
+    }
+
+    .w3-rtl .w3-section-row > div:first-child {
+        margin-left: 10px;
+        margin-right: 0;
+    }
+</style>
+<script>
+    let Roles = JSON.parse(`<%- JSON.stringify(_.mapValues(_Roles, o => req.t(`roles.${o.name}`))) %>`),
+        UserStatuses = JSON.parse(`<%- JSON.stringify(_.transform(_RefVals.User.status, (o, v) => o[v] = req.t(`user_status.${v}`))) %>`),
+        Users = {},
+        Dic = {
+            deactivate_user: `<%- req.t('users_manage.deactivate_user') %>`,
+            activate_user: `<%- req.t('users_manage.activate_user') %>`,
+            reset_password: `<%- req.t('users_manage.reset_password') %>`,
+            edit_user: `<%- req.t('users_manage.edit_user') %>`,
+        }
+
+    const newUserConstraints = [
+        {name: 'firstname', constraints: [{minLen: 3}, {maxLen: 30}]},
+        {name: 'surname', constraints: [{minLen: 3}, {maxLen: 30}]},
+        {
+            name: 'username', constraints: [{minLen: 4}, {maxLen: 30}],
+            preValProcess: (val) => toEnDigit(val),
+        },
+        {
+            name: 'sid', constraints: [{minLen: 5}, {match: /^\d+$/}],
+            required: false,
+            preValProcess: (val) => toEnDigit(val),
+        },
+        {name: 'password', constraints: [{minLen: 8}, {maxLen: 30}]},
+        {name: 'role', constraints: [{}], inputType: 'select'},
+        {name: 'address', constraints: [{minLen: 5}, {maxLen: 120}], required: false},
+    ]
+
+    let userTable
+    $(function () {
+        $('#modal-content').html($('#user-modal-content').html())
+        $('#user-modal-content').remove()
+        $('#role select').on('change', (e) => {
+            roleSelectChange(e.target.value, true, 0)
+        })
+        let columns = [
+                {
+                    data: 'username',
+                    render: function (data, type) {
+                        return formatPhoneNumber(data)
+                    },
+                }, {
+                    data: 'role',
+                    render: function (data, type) {
+                        return (Roles[data] || '')
+                    },
+                }, {
+                    render: function (data, type, row) {
+                        return `${row.firstname} ${row.surname || ''}`
+                    },
+                }, {
+                    data: '_id',
+                    class: 'operation no-filter',
+                    render: function (id, type, row) {
+                        let operations = ''
+                        Users[id] = row
+                        if (row.status !== '<%- _RefVals.User.status.DEACTIVE %>') {
+                            operations += `<i class="fa-solid fa-user-xmark" data-id="${id}" onclick="deactivateUser(this, true)" title="${Dic.deactivate_user}"></i>`
+                        } else {
+                            return `<i class="fa-solid fa-user-check" data-id="${id}" onclick="deactivateUser(this, false)" title="${Dic.activate_user}"></i>`
+                        }
+                        if (row.status !== '<%- _RefVals.User.status.RESET_PASSWORD %>') {
+                            operations += `<i class="fa-solid fa-recycle" data-id="${id}" onclick="resetPassword(this)" title="${Dic.reset_password}"></i>`
+                        }
+                        operations += `<i class="fa-solid fa-user-pen" data-id="${id}" onclick="initEditUser(this)" title="${Dic.edit_user}"></i>`
+                        return operations
+                    },
+                }, {
+                    data: 'createdAt',
+                    render: function (data, type) {
+                        return renderDate(data)
+                    },
+                }, {
+                    data: 'createdBy', defaultContent: '',
+                    render: function (data, type) {
+                        return data ? `${data.username} (${data.firstname} ${data.surname})` : ''
+                    },
+                }, {
+                    data: 'status', defaultContent: '',
+                    render: function (status, type) {
+                        if (!status) {
+                            return ''
+                        }
+                        return UserStatuses[status]
+                    },
+                },
+            ],
+            order = [[4, "desc"]]
+        initDataTableLocalize('#dataTable')
+        userTable = $('#dataTable').DataTable({
+            ...commonDataTableSettings,
+            order,
+            columns,
+            ajax: {
+                url: '<%- _Routes.USERS_GET_ALL.path %>',
+                cache: true,
+            },
+        })
+
+        initDataTableColumnFilters(userTable)
+
+        $('#sid input').on('input', () => {
+            $('#sid').removeClass('error')
+        })
+        for (let constraint of newUserConstraints) {
+            $(`#${constraint.name} ${constraint.inputType || 'input'}`).on(constraint.inputType ? 'change' : 'input', () => {
+                $(`#${constraint.name}`).removeClass('error')
+            })
+        }
+    })
+
+    function initNewUser() {
+        $('#modal .edit-user').hide()
+        $('#modal .new-user').show()
+        $('#modal #password').removeClass('invisible')
+        $('#modal').css('display', 'block')
+        clearModalInputs()
+    }
+
+    function initEditUser(e) {
+        let user = Users[$(e).data('id')]
+        for (let constraint of newUserConstraints) {
+            if (constraint.inputType === 'select') {
+                setSelectOption($(`#${constraint.name} select`), user[constraint.name])
+            } else {
+                $(`#${constraint.name} input`).val(user[constraint.name])
+                                              .trigger('input')
+            }
+        }
+        $('#modal-content').data('edit-id', $(e).data('id'))
+        // roleSelectChange(user.role, false, $('#type select')[0].selectedIndex)
+        $('#modal .new-user').hide()
+        $('#modal #password').addClass('invisible')
+        $('#modal .edit-user').show()
+        $('#modal').css('display', 'block')
+    }
+
+    async function submitNewUser(el) {
+        let err = false,
+            post = {},
+            role = $('#role select').val()
+
+        if (!role) {
+            $(`#role`).addClass('error')
+            return
+        }
+        err = await checkInputs(newUserConstraints, post)
+        if (err) {
+            notif('<%- req.t('common.complete_form_first') %>', 'fail')
+            return
+        }
+        if (!confirm('<%- req.t('users_manage.confirm_new_user_msg') %>')) {
+            return
+        }
+        postJSON('<%- _Routes.USERS_NEW_USER.path %>', post,
+            {
+                onSuccessTail: () => {
+                    userTable.ajax.reload()
+                },
+                spinnerBtn: el,
+            },
+        ).finally(() => {
+            closeModal()
+        })
+    }
+
+    function submitEditUser(el) {
+        let err = false,
+            post = {id: $('#modal-content').data('edit-id') + ''},
+            role = $('#role select').val()
+
+        if (!role) {
+            $(`#role`).addClass('error')
+            return
+        }
+        for (let key in newUserConstraints) {
+            if (newUserConstraints[key].name === 'password') {
+                delete newUserConstraints[key]
+                break
+            }
+        }
+        err = checkInputs(newUserConstraints, post)
+
+        if (err) {
+            notif('<%- req.t('common.complete_form_first') %>', 'fail')
+            return
+        }
+        if (!confirm('<%- req.t('users_manage.confirm_edit_user_msg') %>')) {
+            return
+        }
+        postJSON('<%- _Routes.USERS_EDIT_USER.path %>', post,
+            {
+                onSuccessTail: () => {
+                    userTable.ajax.reload()
+                },
+                spinnerBtn: el,
+            },
+        ).finally(() => {
+            closeModal()
+        })
+    }
+
+    function deactivateUser(e, isToDeactivate) {
+        $(e).parents('tr').addClass('prep-delete')
+        setTimeout(() => {
+            if (!confirm(isToDeactivate ? '<%- req.t('users_manage.confirm_deactivate_user_msg') %>' : '<%- req.t('users_manage.confirm_activate_user_msg') %>')) {
+                $(e).parents('tr').removeClass('prep-delete')
+                return
+            }
+            let userId = $(e).data('id') + ''
+            postJSON('<%- _Routes.USERS_DEACTIVATE.path %>', {userId: userId, deactivate: isToDeactivate},
+                {
+                    onSuccessTail: () => {
+                        userTable.ajax.reload()
+                    },
+                    onFailTail: () => {
+                        $(e).parents('tr').removeClass('prep-delete')
+                    },
+                }).finally(() => {
+                $('.prep-delete').removeClass('prep-delete')
+            })
+        }, 20)
+    }
+
+    function resetPassword(e) {
+        $(e).parents('tr').addClass('prep-delete')
+        setTimeout(() => {
+            if (!confirm('<%- req.t('users_manage.confirm_user_reset_password_msg') %>')) {
+                $(e).parents('tr').removeClass('prep-delete')
+                return
+            }
+            let userId = $(e).data('id') + ''
+            postJSON('<%- _Routes.USERS_RESET_PASSWORD.path %>',
+                {userId: userId},
+                {
+                    onSuccessTail: () => {
+                        userTable.ajax.reload()
+                    },
+                    onFailTail: () => {
+                        $(e).parents('tr').removeClass('prep-delete')
+                    },
+                },
+            ).finally(() => {
+                $('.prep-delete').removeClass('prep-delete')
+            })
+        }, 20)
+    }
+
+    async function checkInputs(constraints, post) {
+        let err = false,
+            validateData
+        for (let entry of constraints) {
+            entry.selector = $(`#${entry.name} ${entry.inputType || 'input'}`)
+            validateData = await validateInput('#modal', entry)
+            if (validateData.errStatus) {
+                err = true
+                entry.selector.parent().addClass('error')
+                entry.selector.parent().find(`.error-msg`).text(validateData.errMessage)
+            } else if (validateData.value !== undefined) {
+                post[hyphenToCamelCase(entry.name)] = validateData.value
+            }
+        }
+
+        return err
+    }
+
+    function closeModal() {
+        $('#modal').css('display', 'none')
+    }
+
+    function roleSelectChange(role, clearInputs = false, customerType) {
+        if (clearInputs) {
+            clearModalInputs()
+        }
+        $('#firstname, #surname, #username, #password, #sid, #address').show()
+    }
+
+    function handleConstraintReject(constraint, val, onFail) {
+        if (constraint.required === false && (val === '' || val === null || val === undefined || val === 0)) {
+            return false
+        }
+        $(`#${constraint.name}`).addClass('error')
+        onFail(constraint, val)
+        return true
+    }
+
+    function clearModalInputs() {
+        $('#modal input').val('')
+        $('.w3-section-row > div').removeClass('error')
+    }
+</script>
