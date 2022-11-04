@@ -1,2 +1,2 @@
 # ss-node
-Express.js + EJS + MongoDB/Mongoose + Jest.js
+A demo node project (Express.js + EJS + MongoDB/Mongoose + Jest.js)
